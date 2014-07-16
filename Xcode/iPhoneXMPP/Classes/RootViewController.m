@@ -5,6 +5,9 @@
 #import "XMPPFramework.h"
 #import "DDLog.h"
 
+
+#import "ChatViewController.h"
+
 // Log levels: off, error, warn, info, verbose
 #if DEBUG
   static const int ddLogLevel = LOG_LEVEL_VERBOSE;
@@ -54,7 +57,7 @@
 
 - (void)viewWillDisappear:(BOOL)animated
 {
-	[[self appDelegate] disconnect];
+	//[[self appDelegate] disconnect];
 	[[[self appDelegate] xmppvCardTempModule] removeDelegate:self];
 	
 	[super viewWillDisappear:animated];
@@ -189,6 +192,19 @@
 	[self configurePhotoForCell:cell user:user];
 	
 	return cell;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    XMPPUserCoreDataStorageObject *user = [[self fetchedResultsController] objectAtIndexPath:indexPath];
+    
+    ChatViewController *chatVC = [[ChatViewController alloc]initWithNibName:@"ChatViewController" bundle:nil];
+    
+    chatVC.navigationItem.title = user.jidStr;
+    
+    [chatVC setChatForUser:user];
+    
+    [self.navigationController pushViewController:chatVC animated:YES];
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
